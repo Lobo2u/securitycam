@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang=ko>
+
+<head>
+	<meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>Arduino Security Web Camera</title>
+    <style>
+	body{
+	background:#5e5e5e;
+	color:#FFFFFF;
+	
+	}
+input[type="checkbox"] {
+  display: none;
+}
+
+.label__on-off {
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
+    width: 140px;
+    height: 50px;
+    -webkit-border-radius: 13px;
+    -moz-border-radius: 13px;
+    border-radius: 30px;
+    background-color: #ed4956;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    -ms-transition: all .3s;
+    -o-transition: all .3s;
+    transition: all .3s;
+}
+
+.label__on-off > * {
+    vertical-align: sub;
+    -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    -ms-transition: all .3s;
+    -o-transition: all .3s;
+    transition: all .3s;
+    font-size: 14px;
+}
+
+.label__on-off .marble {
+    position: absolute;
+    top: 8px;
+    left: 5px;
+    display: block;
+    width: 35px;
+    height: 35px;
+    background-color: #fff;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+}
+
+.label__on-off .on {
+    display: none;
+    padding-left: -0px;
+	line-height: 45px;
+}
+
+.label__on-off .off {
+    padding-left: 30px;
+    line-height: 45px;
+}
+
+.input__on-off:checked + .label__on-off {
+    background-color: #0bba82;
+}
+
+.input__on-off:checked + .label__on-off .on {
+    display: inline-block;
+}
+
+.input__on-off:checked + .label__on-off .off {
+    display: none;
+}
+
+.input__on-off:checked + .label__on-off .marble {
+    left: 100px;
+}
+	</style>
+</head>
+
+<body>
+	
+	
+	
+	<div align="center" style="font-size:40px;">Aduino Security Camera</div>
+
+	<div align="center" style="margin-top:80px; ">
+		<iframe src="http://192.168.231.68:81/stream" width="400" height="296" frameborder="0" border="0" >
+		</iframe>
+	</div>
+	
+
+
+	<div align="center">
+	<input type="checkbox" id="switch1" name="switch1" class="input__on-off"> 
+	<label for="switch1" class="label__on-off"> 
+	<span class="marble"></span> 
+	<span class="on" value="on" onClick="security_on()" style=" font-size: 24px;">ON</span>
+	<span class="off" value="Off" onClick="security_off()" style=" font-size: 24px;">OFF</span> 
+	</label>
+
+		<!--<input  type="button" value="On" onClick="security_on()" style="background-color: #ffffff; font-size: 24px;" ></input>
+		&nbsp;&nbsp;
+		<input type="button" value="Off" onClick="security_off()" ></input>	
+		-->
+	</div>
+	<div style="font-size:50px; margin-left:10px;"><span>Distance:</span><span id="dis"><span></div>	
+	<div class="state-wrap" align="center">
+  <h1 class="date" > 0000 / 00 / 00 </h1>
+  <h1 class="hours" > 00 : 00 : 00 </h1>
+</div>
+	
+    <iframe src="about:blank" width="0" height="0" frameborder="0" border="0" marginwidth="0" marginheight="0" name="response"></iframe>
+    
+    <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	
+    <script>
+	
+	$(document).ready(function() 
+	{
+		$(function(){
+			var socket = io();
+				
+			socket.on('dist', function(distance){
+				$('#dis').text(distance);
+				console.log(distance);
+			});
+		});
+	});
+	
+	function security_on(){
+		response.location.href=("http://localhost:3000/security_on");
+	}
+	
+	function security_off(){
+		response.location.href=("http://localhost:3000/security_off");
+	}
+	$(document).ready(function(){
+  
+  var calendar = new Date();
+  var cal_year = calendar.getFullYear();
+  var cal_month = calendar.getMonth() + 1 ;
+  var cal_date = calendar.getDate();
+  var cal_hour = calendar.getHours();
+  var cal_min = calendar.getMinutes();
+  var cal_sec = calendar.getSeconds();
+  if(cal_month < 10){
+    cal_month = "0" + cal_month;
+  }
+  if(cal_date < 10){
+    cal_date = "0" + cal_date;
+  }
+  if(cal_hour < 10){
+    cal_hour = "0" + cal_hour;
+  }
+  if(cal_min < 10){
+    cal_min = "0" + cal_min;
+  }
+  if(cal_sec < 10){
+    cal_sec = "0" + cal_sec;
+  }
+  console.log(cal_min)
+  
+  $(".date").text(cal_year + " / " + cal_month + " / " + cal_date);
+  $(".hours").text(cal_hour +" : "+ cal_min+ " : "+ cal_sec);
+  
+  var test = 1
+  
+  console.log( String(cal_sec).padStart(2,"0") )
+  
+  setInterval(function(){
+    
+    var clock = new Date();
+    var clo_hour = clock.getHours();
+    var clo_min = clock.getMinutes();
+    var clo_sec = clock.getSeconds();
+    $(".hours").text(clo_hour +" : "+ clo_min+ " : "+ clo_sec);
+    console.log(clo_sec)
+    
+  },1000)
+  
+});
+
+	</script>
+
+</body>
+</html>
