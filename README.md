@@ -55,6 +55,8 @@ npm start
 
 Open [http://localhost:3000](http://localhost:3000) (`public/index.html`).
 
+This repo currently commits a `node_modules` tree. `serialport` 9.x includes a native addon, so those binaries are OS-specific (the checked-in build looks like a Windows addon). If `npm start` dies with a missing or invalid `.node` binding, delete `node_modules` and run `npm install` on the machine you will use. An older Node (the stack is Express 4.16 / serialport 9) is more likely to compile that addon than current Node 22.
+
 Without a board on `COM4`, SerialPort will fail to open. The HTTP server may still print `listening on *:3000`, but `/security_on`, `/security_off`, and live distance updates will not work.
 
 ### Node HTTP and Socket.IO
